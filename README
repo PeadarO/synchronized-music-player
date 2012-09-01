@@ -1,0 +1,25 @@
+Synchronized music player
+
+SUMMARY
+This synchronized music player contains two major components:
+* ./player, a command line music player based on PortAudio and FFMPEG that allows for microsecond start time specification, in the past or the future. Used like "./player --start_us=12345678 song.mp3". The time is specified in microseconds since the epoch.
+* Several python scripts (player.py, server.py and commander.py) that coordinate several computers to play a song through ./player at exactly the same time, compensating for clock drift between the computers. Heavily uses pyzmq.
+
+USAGE
+./player is built using Scons. It depends on libportaudio, libgflags and FFMPEG. After gathering those dependencies, the binary can be built by running 'scons'. As a utility, dylib_grabber.py is supplied to help collect the dependencies of ./player and spread them for OS X systems.
+The python scripts depend on pyzmq.
+
+After compiling the player, put the server you want to use in config.py. Then run server.py on the server, and client.py on all clients. Finally, to play a song, run "commander.py song.mp3" somewhere and open your ears!
+
+WARNING
+The python scripts are not secure and should not be run in a hostile network. The player.py will only connect to the server and is relatively safe. The server.py however can be tricked in to writing arbitrary files on the file system. The python scripts are a demo of ./player.
+
+DETAILS FOR UBUNTU
+    sudo apt-get install scons portaudio19-dev uuid-dev libtool autoconf automake libavcodec-dev libavformat-dev libavutil-dev build-essential
+    wget http://gflags.googlecode.com/files/gflags-2.0-no-svn-files.tar.gz
+    tar xvf gflags-2.0-no-svn-files.tar.gz
+    cd gflags-2.0 && ./configure && make && sudo make install && cd ..
+    scons
+
+Copyright 2012 Jelle van den Hooff; see LICENSE.
+
